@@ -19,19 +19,19 @@ public enum Direction {
 		};
 	}
 	
-	private int x;
-	private int y;
-	public int x() {return x;}
-	public int y() {return y;}
+	private int dx;
+	private int dy;
+	public int x() {return dx;}
+	public int y() {return dy;}
 	
-	Direction(int x, int y) {
-		this.x = x;
-		this.y = y;
+	Direction(int dx, int dy) {
+		this.dx = dx;
+		this.dy = dy;
 	}
 	
 	public Direction inverse() {
-		x *= -1;
-		y *= -1;
+		dx *= -1;
+		dy *= -1;
 		return this;
 	}
 }

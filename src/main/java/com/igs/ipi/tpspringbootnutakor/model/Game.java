@@ -1,42 +1,58 @@
 package com.igs.ipi.tpspringbootnutakor.model;
 
-import java.util.HashMap;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import com.igs.ipi.tpspringbootnutakor.game.Map;
-import com.igs.ipi.tpspringbootnutakor.game.Player;
 
+@Entity
 public class Game {
 	
-	private int id;
-	private HashMap<Integer, Player> players;
-	private int playerTurn = 1;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer id;
 	
-	private int w;
-	private int h;
+	@OneToOne(targetEntity = Player.class)
+	private Player player1;
+	@OneToOne(targetEntity = Player.class)
+	private Player player2;
+	
+	private Integer width;
+	private Integer height;
+	
+	@Transient
+	private Player currentPlayer;
+	
+	@Transient
 	private Map map;
-	public Map map() {return map;}
+	public Map getMap() {return map;}
 	
-	public Game(int id, Player p1, Player p2, int w, int h) {
-		this.id = id;
-		
-		this.players = new HashMap<>();
+	public Game(Player p1, Player p2, Integer w, Integer h) {
 
-		this.players.put(1, p1);
-		this.players.put(2, p2);
+		player1 = p1;
+		player2 = p2;
 		
-		this.w = w;
-		this.h = h;
-		map = new Map(w, h, id);
+		width = w;
+		height = h;
+		map = new Map(w, h, this);
 	}
 	
-	public void win(int pId, int hits) {
-		Player winner = players.get(pId);
-		Player loser = players.get(otherId(pId));
+	public void win(Player winner, int hits) {
+		
 		winner.addVictory(hits);
-		loser.addLoss();
+		
+		if(player1.equals(winner)) {
+			player2.addLoss();
+		} else {
+			player1.addLoss();
+		}
 	}
 
-	private int otherId(int pId) {
-		return (pId == 1) ? 2 : 1;
+	private Player otherPlayer(Player p) {
+		return player1.equals(p) ? player2 : player1;
 	}
 }
